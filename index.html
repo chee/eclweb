@@ -63,33 +63,4 @@
 		let worker = new Worker("/bjork.js")
 		new TtyServer(pipe).start(worker)
 	</script>
-	<script>
-		function print(text) {
-			console.log({text})
-			window.text = text
-		}
-		let i = 0
-		let input = '(print "hello there")\n'
-		window.Module = {
-			print,
-			setStatus: text => {
-				if (text == "Running...") {
-					window.ready = true
-				}
-			},
-			preRun: function () {
-				TTY.default_tty_ops.get_char =
-					//window.stdio.init()
-					window._prompt = window.prompt
-				started = false
-				window.prompt = () => {
-					if (!started) {
-						started = true
-						window.stdio.init()
-					}
-					return null
-				}
-			},
-		}
-	</script>
 </html>

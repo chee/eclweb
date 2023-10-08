@@ -2,45 +2,25 @@
 <html lang="en-ca">
 	<meta charset="utf-8" />
 	<title>common lisp powered website</title>
-	<style></style>
+	<style>
+		* {
+			background: #ffe9ed;
+			color: #cc3366;
+			font-size: 16px;
+		}
+		button,
+		input {
+			border: 1px solid;
+		}
+		button:hover {
+			background: #ff8899;
+			color: #ffe9ed;
+		}
+	</style>
 	<pre><samp id="output"></samp></pre>
 	<div id="controls">
 		<input id="number" value="2222" type="number" />
 		<button id="button">convert number to words</button>
 	</div>
-	<script>
-		let worker = new Worker("/io.worker.js")
-		let sharedbuffer = new SharedArrayBuffer(8)
-		let wait = new Int32Array(sharedbuffer, 0, 1)
-		let data = new Int32Array(sharedbuffer, 4)
-		let codes = string => Array.from(string + "\n", ch => ch.charCodeAt(0))
-		let buffer = codes(`"hello, world :>"`)
-
-		async function get_char() {
-			if (buffer.length) {
-				return buffer.shift()
-			} else {
-				return new Promise(yay => {
-					button.addEventListener(
-						"click",
-						() => {
-							buffer = codes(`(format nil "~R" ${number.value})`)
-							yay(buffer.shift())
-						},
-						{once: true}
-					)
-				})
-			}
-		}
-		worker.onmessage = async function ({data: message}) {
-			if (message.type == "input") {
-				data.set([await get_char()], 0)
-				Atomics.store(wait, 0, 1)
-				Atomics.notify(wait, 0)
-			} else if (message.type == "output") {
-				output.textContent += "\n" + message.text
-			}
-		}
-		worker.postMessage(sharedbuffer)
-	</script>
+	<script src="friend.js"></script>
 </html>

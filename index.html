@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-ca">
+  <meta charset="utf-8">
+  <title>common lisp powered website</title>
+  <script>
+    function print(text) {
+	console.log({text})
+	window.text = text
+    }
+    let i = 0
+    let input = '(print "hello there")\n'
+    window.Module = {
+	print,
+	setStatus: (text) => {
+	    if (text == "Running...") {
+		
+		window.ready = true
+	    }
+	},
+	preRun: function() {
+	    function stdin() {
+		if (i < input.length) {
+		    return input.charCodeAt(i++)
+		} else {
+		    return null
+		}
+	    }
+	    let out = []
+	    let err = []
+	    let nl = 10
+	    function stdout(c) {
+		if (c == nl) {
+		    console.log(out.map(_=>String.fromCharCode(_)).join(""))
+		    out = []		    
+		} else {
+		    out.push(c)
+		}
+	    }
+
+	    function stderr(c) {
+		if (c == nl) {
+		    console.log(err.map(_=>String.fromCharCode(_)).join(""))
+		    err = []		    
+		} else {
+		    err.push(c)
+		}
+	    }
+
+	    FS.init(stdin, stdout, stderr)
+	}
+    };
+    const sent = false
+    window.prompt = () => {
+	if (!window.ready) {
+	    return null
+	}
+	if (window.sent) {
+	    return Math.random()*2|0?`
+(print "Hello, world! 🐰")
+(list-all-packages)
+`:null
+	}
+	window.sent = true
+	return `
+(print "Hello, world! 🐰")
+(list-all-packages)
+`
+    }
+  </script>
+  <script src="ecl.js"></script>
+</body>
+</html>

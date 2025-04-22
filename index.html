@@ -1,66 +1,68 @@
 <!doctype html>
 <html lang="en-ca">
-	<meta charset="utf-8" />
-	<title>common lisp powered website</title>
-	<link rel="stylesheet" href="/node_modules/xterm/css/xterm.css" />
-	<style>
-		html,
-		body {
-			margin: 0;
-			overflow: hidden;
-		}
-		terminal {
-			position: absolute;
-			left: 0;
-			right: 0;
-			bottom: -1em;
-			top: 0;
-		}
-	</style>
-	<terminal id="terminal"></terminal>
-	<script src="/node_modules/xterm/lib/xterm.js"></script>
-	<script src="/node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
-	<script src="/node_modules/xterm-pty/index.js"></script>
-	<script>
-		let theme = {
-			background: "#ffe9ed",
-			foreground: "#cc3366",
-			selection: "#fe8",
-			black: "#1e1316",
-			blue: "#407acd",
-			cyan: "#22a6cd",
-			green: "#00aba5",
-			magenta: "#6d1699",
-			red: "#ed2b3c",
-			yellow: "#e59101",
-			white: "#b8768c",
-			brightBlack: "#543641",
-			brightBlue: "#3388ff",
-			brightCyan: "#2ec2ff",
-			brightGreen: "#01b9a4",
-			brightMagenta: "#af40cb",
-			brightRed: "#ff275d",
-			brightYellow: "#c9af13",
-			brightWhite: "#e090ae",
-			cursor: "#ff2a50",
-		}
-		let xterm = new Terminal({
-			fontFamily: "Iosevka Rabbits, monospace",
-			fontSize: 22,
-			theme: theme,
-			cursorBlink: false,
-			allowProposedApi: false,
-		})
-		let fitAddon = new FitAddon.FitAddon()
-		xterm.loadAddon(fitAddon)
-		xterm.open(document.querySelector("#terminal"))
+<meta charset="utf-8" />
+<title>common lisp powered website</title>
+<link rel="stylesheet" href="/modules/xterm/css/xterm.css" />
+<style>
+	html,
+	body {
+		margin: 0;
+		overflow: hidden;
+	}
+
+	terminal {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1em;
+		top: 0;
+	}
+</style>
+<terminal id="terminal"></terminal>
+<script src="/modules/xterm/lib/xterm.js"></script>
+<script src="/modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+<script src="/modules/xterm-pty/index.js"></script>
+<script>
+	let theme = {
+		background: "#ffe9ed",
+		foreground: "#cc3366",
+		selection: "#fe8",
+		black: "#1e1316",
+		blue: "#407acd",
+		cyan: "#22a6cd",
+		green: "#00aba5",
+		magenta: "#6d1699",
+		red: "#ed2b3c",
+		yellow: "#e59101",
+		white: "#b8768c",
+		brightBlack: "#543641",
+		brightBlue: "#3388ff",
+		brightCyan: "#2ec2ff",
+		brightGreen: "#01b9a4",
+		brightMagenta: "#af40cb",
+		brightRed: "#ff275d",
+		brightYellow: "#c9af13",
+		brightWhite: "#e090ae",
+		cursor: "#ff2a50",
+	}
+	let xterm = new Terminal({
+		fontFamily: "Iosevka Rabbits, monospace",
+		fontSize: 22,
+		theme: theme,
+		cursorBlink: false,
+		allowProposedApi: false,
+	})
+	let fitAddon = new FitAddon.FitAddon()
+	xterm.loadAddon(fitAddon)
+	xterm.open(document.querySelector("#terminal"))
+	fitAddon.fit()
+	window.addEventListener("resize", () => {
 		fitAddon.fit()
-		window.addEventListener("resize", () => {
-			fitAddon.fit()
-		})
-		let {master: addon, slave: pipe} = openpty()
-		xterm.loadAddon(addon)
-		let worker = new Worker("/bjork.js")
-		new TtyServer(pipe).start(worker)
-	</script>
+	})
+	let { master: addon, slave: pipe } = openpty()
+	xterm.loadAddon(addon)
+	let worker = new Worker("/bjork.js")
+	new TtyServer(pipe).start(worker)
+</script>
+
 </html>
